@@ -32,7 +32,7 @@ const format = (format, date) => {
                     <tr>
                         <th>ID</th>
                         <th>Tên Tour</th>
-                        <th>Loại</th>
+                        <th>Danh Mục Tour</th>
                         <th>Ngày Tạo</th>
                         <th>Ngày Cập Nhật</th>
                         <th>Hành động</th>
@@ -42,7 +42,7 @@ const format = (format, date) => {
                     <tr v-for="tour in tours" :key="tour.id">
                         <td>{{ tour.id }}</td>
                         <td>{{ tour.name }}</td>
-                        <td>{{ tour.type }}</td>
+                        <td>{{ tour.category?.name || 'Chưa có danh mục' }}</td>
                         <td>{{ format('d/m/Y H:i:s', tour.created_at) }}</td>
                         <td>{{ format('d/m/Y H:i:s', tour.updated_at) }}</td>
                         <td>

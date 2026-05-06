@@ -3,9 +3,12 @@ import { reactive } from 'vue';
 import Layout from '../AdminLayout/layout.vue';
 import { useForm } from '@inertiajs/vue3';
 
+defineProps({
+    categories: Array,
+});
 const form = useForm({
     name: '',
-    type: '',
+    category_id: '',
     description: '',
     slug: '',
     is_active: '1',
@@ -36,17 +39,30 @@ const submitForm = () => {
                     </div>
                 </div>
 
-                <!-- Loại Tour -->
+                <!-- Danh Mục Tour -->
                 <div class="mb-3">
-                    <label for="type" class="form-label">Loại Tour</label>
-                    <input
-                        type="text"
+                    <label for="category_id" class="form-label"
+                        >Danh Mục Tour</label
+                    >
+                    <select
                         class="form-control"
-                        id="type"
-                        v-model="form.type"
-                    />
-                    <div v-if="form.errors.type" class="text-danger mt-1">
-                        {{ form.errors.type }}
+                        id="category_id"
+                        v-model="form.category_id"
+                    >
+                        <option value="">Chọn Danh Mục</option>
+                        <option
+                            v-for="category in categories"
+                            :key="category.id"
+                            :value="category.id"
+                        >
+                            {{ category.name }}
+                        </option>
+                    </select>
+                    <div
+                        v-if="form.errors.category_id"
+                        class="text-danger mt-1"
+                    >
+                        {{ form.errors.category_id }}
                     </div>
                 </div>
 
