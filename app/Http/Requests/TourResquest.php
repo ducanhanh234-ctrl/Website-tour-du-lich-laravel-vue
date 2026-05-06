@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class TourResquest extends FormRequest
 {
@@ -22,11 +23,17 @@ class TourResquest extends FormRequest
      */
     public function rules(): array
     {
+        $tourId = $this->route('tour') ? $this->route('tour')->id : null;
         return [
             'name' => 'required|string|max:255',
-            'type' => 'required|string|max:255',
+            'category_id' => 'nullable|exists:categories,id',
             'description' => 'nullable|string',
-            'slug' => 'required|string|max:255|unique:tours,slug',
+            'slug' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('tours', 'slug')->ignore($tourId),
+            ],
             'is_active' => 'required|boolean',
         ];
     }

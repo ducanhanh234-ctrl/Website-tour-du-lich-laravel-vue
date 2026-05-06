@@ -1,6 +1,7 @@
 <script setup>
+import { ref } from 'vue';
 import Layout from '../AdminLayout/layout.vue';
-import { Link } from '@inertiajs/vue3';
+import { Link, router } from '@inertiajs/vue3';
 
 defineProps({
     tour: Object,
@@ -15,32 +16,41 @@ defineProps({
             <div class="row">
                 <!-- LEFT -->
                 <div class="col-md-8">
-                    <div
-                        class="card shadow-lg rounded-4 overflow-hidden border-0"
-                    >
-                        <!-- IMAGE -->
-                        <img
-                            :src="
-                                tour.image ||
-                                'https://via.placeholder.com/800x400'
-                            "
-                            class="w-100"
-                            style="height: 400px; object-fit: cover"
-                        />
-
+                    <div class="card shadow-lg rounded-4 border-0">
                         <div class="card-body p-4">
-                            <h2 class="fw-bold mb-2">{{ tour.name }}</h2>
+                            <!-- NAME -->
+                            <h2 class="fw-bold mb-3">{{ tour.name }}</h2>
 
-                            <span class="badge bg-primary mb-3">
-                                {{ tour.type }}
+                            <!-- STATUS -->
+                            <span
+                                class="badge mb-3"
+                                :class="
+                                    tour.is_active
+                                        ? 'bg-success'
+                                        : 'bg-secondary'
+                                "
+                            >
+                                {{
+                                    tour.is_active
+                                        ? 'Hoạt Động'
+                                        : 'Không Hoạt Động'
+                                }}
                             </span>
 
-                            <h4 class="text-danger fw-bold">
-                                {{ tour.price }} VNĐ
-                            </h4>
+                            <!-- SLUG -->
+                            <p class="text-muted mb-2">
+                                <strong>Slug:</strong> {{ tour.slug }}
+                            </p>
+
+                            <!-- CATEGORY -->
+                            <p class="mb-3">
+                                <strong>Danh mục:</strong>
+                                {{ tour.category?.name || 'Chưa có' }}
+                            </p>
 
                             <hr />
 
+                            <!-- DESCRIPTION -->
                             <h5 class="fw-semibold">Mô tả</h5>
                             <p class="text-muted">
                                 {{ tour.description || 'Chưa có mô tả' }}
@@ -56,32 +66,37 @@ defineProps({
 
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">
-                                ⏳ Thời gian:
-                                <strong>{{
-                                    tour.duration || '3 ngày 2 đêm'
-                                }}</strong>
+                                🆔 ID:
+                                <strong>{{ tour.id }}</strong>
                             </li>
+
                             <li class="list-group-item">
-                                📍 Địa điểm:
-                                <strong>{{
-                                    tour.location || 'Việt Nam'
-                                }}</strong>
+                                📂 Danh mục:
+                                <strong>
+                                    {{ tour.category?.name || 'Chưa có' }}
+                                </strong>
                             </li>
+
                             <li class="list-group-item">
-                                👥 Số người:
-                                <strong>{{
-                                    tour.capacity || '10-20 người'
-                                }}</strong>
+                                🔗 Slug:
+                                <strong>{{ tour.slug }}</strong>
+                            </li>
+
+                            <li class="list-group-item">
+                                📊 Trạng thái:
+                                <strong>
+                                    {{
+                                        tour.is_active
+                                            ? 'Hoạt Động'
+                                            : 'Không Hoạt Động'
+                                    }}
+                                </strong>
                             </li>
                         </ul>
 
-                        <button class="btn btn-danger w-100 mt-3">
-                            Đặt tour ngay
-                        </button>
-
                         <Link
                             :href="route('tours.index')"
-                            class="btn btn-outline-secondary w-100 mt-2"
+                            class="btn btn-outline-secondary w-100 mt-3"
                         >
                             ← Quay lại
                         </Link>

@@ -27,4 +27,8 @@ class TourVersion extends Model
     {
         return $this->hasMany(TourSchedule::class);
     }
+    public function images()
+    {
+        return $this->hasMany(TourImage::class);
+    }
 }

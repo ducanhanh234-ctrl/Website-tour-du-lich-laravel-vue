@@ -13,7 +13,7 @@ class Tour extends Model
     protected $table = 'tours';
     protected $fillable = [
         'name',
-        'type',
+        'category_id',
         'description',
         'slug',
         'is_active',
@@ -23,5 +23,9 @@ class Tour extends Model
     public function versions()
     {
         return $this->hasMany(TourVersion::class);
+    }
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 }
