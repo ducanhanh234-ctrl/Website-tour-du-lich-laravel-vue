@@ -15,11 +15,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Tạo 10 Tours ngẫu nhiên
-        Tour::factory(10)->create();
+        // Tạo 100 Tours ngẫu nhiên
+        Tour::factory(100)->create();
 
         // Tạo 20 Khách hàng
-        Customer::factory(20)->create();
+        // Customer::factory(20)->create();
 
         // Bạn có thể gọi các class Seeder riêng lẻ nếu bạn viết tách ra
         $this->call([
