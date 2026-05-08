@@ -19,10 +19,12 @@ class TourFactory extends Factory
     {
         return [
             'name' => fake()->sentence(4),
-            'type' => fake()->randomElement(['domestic', 'international', 'customized']),
+            'category_id' => fake()->randomElement([1, 2, 3, 4]),
             'description' => fake()->paragraph(),
             'slug' => fake()->unique()->slug(),
             'is_active' => true,
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }

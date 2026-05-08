@@ -5,15 +5,29 @@ namespace App\Http\Controllers;
 use App\Http\Requests\TourResquest;
 use App\Models\Category;
 use App\Models\Tour;
+use App\Models\TourVersion;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class TourController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $tours = Tour::with('category')->get();
-        return Inertia::render("products/index", compact('tours'));
+        $search = $request->search;
+        $tours = Tour::with('category')
+            ->when($search, function ($query) use ($search) {
+                $query->where('name', 'like', "%$search%")
+                    ->orWhere('description', 'like', "%$search%");
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(10)
+            ->withQueryString();
+        return Inertia::render('products/index', [
+            'tours' => $tours,
+            'filters' => [
+                'search' => $search,
+            ],
+        ]);
     }
     public function create()
     {
@@ -40,8 +54,14 @@ class TourController extends Controller
         $tour->update($request->validated());
         return redirect()->route('tours.index')->with('success', 'Tour updated successfully.');
     }
-    public function destroy(Tour $tour)
+    public function destroy($id)
     {
+        $tour = Tour::findOrFail($id);
+        $hasTour = TourVersion::where('tour_id', $tour->id)->exists();
+
+        if ($hasTour) {
+            return back()->with('error', 'Tour đang có đơn hàng nên không thể xóa');
+        }
         $tour->delete();
         return redirect()->route('tours.index')->with('success', 'Tour deleted successfully.');
     }

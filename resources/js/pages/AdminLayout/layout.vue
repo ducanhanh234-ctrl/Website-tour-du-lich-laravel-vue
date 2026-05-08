@@ -83,7 +83,7 @@ import Header from '@/components/header.vue';
 import Aside from '@/components/aside.vue';
 import Footer from '@/components/footer.vue';
 defineProps({
-    tours: Array,
+    tours: Object,
     category: String,
 });
 const loadCss = (href: string) => {

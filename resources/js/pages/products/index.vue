@@ -1,11 +1,14 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import axios from 'axios';
 import Layout from '../AdminLayout/layout.vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import { router } from '@inertiajs/vue3';
-defineProps({
-    tours: Array,
+import debounce from 'lodash/debounce';
+import Pagination_v1 from '@/components/pagination_v1.vue';
+const props = defineProps({
+    tours: Object,
+    filters: Object,
 });
 const page = usePage();
 const format = (format, date) => {
@@ -18,16 +21,49 @@ const format = (format, date) => {
         second: '2-digit',
     });
 };
+const destroyTour = async (id) => {
+    if (window.confirm('Bạn có chắc muốn xóa tour này không?')) {
+        await router.delete(route('tours.destroy', id));
+    }
+};
+const search = ref(props.filters.search || '');
+watch(
+    search,
+    debounce((value) => {
+        router.get(
+            route('tours.index'),
+            {
+                search: value,
+            },
+            {
+                preserveState: true,
+                replace: true,
+            },
+        );
+    }, 500),
+);
 </script>
 
 <template>
     <Layout :tours="tours" category="Quản Lý Danh Sách Tour">
         <template #title>Danh sách tour du lịch</template>
         <div class="card-body">
-            <Link :href="route('tours.create')" class="btn btn-primary mb-3"
-                >Thêm Tour Mới
-            </Link>
-            <table class="table-bordered table">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <Link :href="route('tours.create')" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-1"></i>
+                    Thêm Tour Mới
+                </Link>
+
+                <div class="w-25">
+                    <input
+                        type="text"
+                        v-model="search"
+                        class="form-control"
+                        placeholder="Tìm kiếm tour..."
+                    />
+                </div>
+            </div>
+            <table class="table">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -39,7 +75,7 @@ const format = (format, date) => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="tour in tours" :key="tour.id">
+                    <tr v-for="tour in tours.data" :key="tour.id">
                         <td>{{ tour.id }}</td>
                         <td>{{ tour.name }}</td>
                         <td>{{ tour.category?.name || 'Chưa có danh mục' }}</td>
@@ -57,11 +93,7 @@ const format = (format, date) => {
                                 >Sửa</Link
                             >
                             <button
-                                @click="
-                                    router.delete(
-                                        route('tours.destroy', tour.id),
-                                    )
-                                "
+                                @click="destroyTour(tour.id)"
                                 class="btn btn-danger btn-sm"
                             >
                                 Xóa
@@ -69,6 +101,13 @@ const format = (format, date) => {
                         </td>
                     </tr>
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="6">
+                            <Pagination_v1 :tours="tours" :search="search" />
+                        </td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </Layout>
