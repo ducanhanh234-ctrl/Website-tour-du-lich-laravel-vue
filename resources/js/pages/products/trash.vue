@@ -21,9 +21,19 @@ const format = (format, date) => {
         second: '2-digit',
     });
 };
-const destroyTour = async (id) => {
-    if (window.confirm('Bạn có chắc muốn xóa tour này không?')) {
-        await router.delete(route('tours.destroy', id));
+const restoreTour = (id) => {
+    if (confirm('Bạn có muốn khôi phục tour này không?')) {
+        router.put(route('tours.restore', id));
+    }
+};
+const destroyTour = (id) => {
+    if (confirm('Bạn có chắc muốn xóa tour này không?')) {
+        router.delete(route('tours.forceDelete', id));
+    }
+};
+const destroyAll = (id) => {
+    if (confirm('Bạn có chắc muốn xóa tất cả tour đã xóa không?')) {
+        router.delete(route('tours.forceDeleteAll', id));
     }
 };
 const search = ref(props.filters.search || '');
@@ -31,7 +41,7 @@ watch(
     search,
     debounce((value) => {
         router.get(
-            route('tours.index'),
+            route('tours.trash'),
             {
                 search: value,
             },
@@ -46,25 +56,22 @@ watch(
 
 <template>
     <Layout :tours="tours" category="Quản Lý Danh Sách Tour">
-        <template #title>Danh sách tour du lịch</template>
+        <template #title>Danh sách các tour đã xóa</template>
         <div class="card-body">
             <div
                 class="d-flex justify-content-between align-items-center gap-3 mb-3 flex-wrap"
             >
                 <!-- Nhóm nút -->
                 <div class="d-flex gap-2">
-                    <Link :href="route('tours.create')" class="btn btn-primary">
-                        <i class="bi bi-plus-circle me-1"></i>
-                        Thêm Tour Mới
+                    <Link :href="route('tours.index')" class="btn btn-primary">
+                        <i class="bi bi-arrow-left me-1"></i>
+                        Quay Lại
                     </Link>
 
-                    <Link
-                        :href="route('tours.trash')"
-                        class="btn btn-outline-danger"
-                    >
-                        <i class="bi bi-trash me-1"></i>
-                        Thùng Rác
-                    </Link>
+                    <button class="btn btn-danger" @click="destroyAll(1)">
+                        <i class="bi bi-trash"></i>
+                        Xóa Tất Cả
+                    </button>
                 </div>
 
                 <!-- Ô tìm kiếm -->
@@ -96,29 +103,25 @@ watch(
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(tour, index) in tours.data" :key="tour.id">
-                        <td>{{ index + 1 }}</td>
+                    <tr v-for="tour in tours.data" :key="tour.id">
+                        <td>{{ tour.id }}</td>
                         <td>{{ tour.tour_code }}</td>
                         <td>{{ tour.name }}</td>
                         <td>{{ tour.category?.name || 'Chưa có danh mục' }}</td>
                         <td>{{ format('d/m/Y H:i:s', tour.created_at) }}</td>
                         <td>{{ format('d/m/Y H:i:s', tour.updated_at) }}</td>
                         <td>
-                            <Link
-                                :href="route('tours.show', tour.id)"
-                                class="btn btn-info btn-sm me-2"
-                                >Xem</Link
+                            <button
+                                class="btn btn-success btn-sm me-2"
+                                @click="restoreTour(tour.id)"
                             >
-                            <Link
-                                :href="route('tours.edit', tour.id)"
-                                class="btn btn-warning btn-sm me-2"
-                                >Sửa</Link
-                            >
+                                Khôi Phục
+                            </button>
                             <button
                                 @click="destroyTour(tour.id)"
                                 class="btn btn-danger btn-sm"
                             >
-                                Xóa
+                                Xóa vĩnh viễn
                             </button>
                         </td>
                     </tr>

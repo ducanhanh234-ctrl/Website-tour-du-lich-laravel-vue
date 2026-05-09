@@ -17,7 +17,7 @@ class TourController extends Controller
         $tours = Tour::with('category')
             ->when($search, function ($query) use ($search) {
                 $query->where('name', 'like', "%$search%")
-                    ->orWhere('description', 'like', "%$search%");
+                    ->orWhere('tour_code', 'like', "%$search%");
             })
             ->orderBy('created_at', 'desc')
             ->paginate(10)
@@ -64,5 +64,40 @@ class TourController extends Controller
         }
         $tour->delete();
         return redirect()->route('tours.index')->with('success', 'Tour deleted successfully.');
+    }
+    public function trash(Request $request)
+    {
+        $search = $request->search;
+        $tours = Tour::onlyTrashed()->with('category')
+            ->when($search, function ($query) use ($search) {
+                $query->where('name', 'like', "%$search%")
+                    ->orWhere('tour_code', 'like', "%$search%");
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(10)
+            ->withQueryString();
+        return Inertia::render('products/trash', [
+            'tours' => $tours,
+            'filters' => [
+                'search' => $search,
+            ],
+        ]);
+    }
+    public function restore($id)
+    {
+        $tour = Tour::onlyTrashed()->findOrFail($id);
+        $tour->restore();
+        return redirect()->route('tours.trash')->with('success', 'Tour restored successfully.');
+    }
+    public function forceDelete($id)
+    {
+        $tour = Tour::onlyTrashed()->findOrFail($id);
+        $tour->forceDelete();
+        return redirect()->route('tours.trash')->with('success', 'Tour permanently deleted successfully.');
+    }
+    public function forceDeleteAll($id)
+    {
+        Tour::onlyTrashed()->forceDelete();
+        return redirect()->route('tours.trash')->with('success', 'All trashed tours permanently deleted successfully.');
     }
 }

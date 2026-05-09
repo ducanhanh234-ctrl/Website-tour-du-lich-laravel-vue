@@ -9,6 +9,7 @@ const props = defineProps({
 });
 const form = useForm({
     id: props.tour.id,
+    tour_code: props.tour.tour_code,
     name: props.tour.name || '',
     category_id: props.tour.category_id || '',
     description: props.tour.description || '',
@@ -40,7 +41,18 @@ const submitForm = () => {
                         {{ form.errors.name }}
                     </div>
                 </div>
-
+                <div class="mb-3">
+                    <label for="tour_code" class="form-label">Mã Tour</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="tour_code"
+                        v-model="form.tour_code"
+                    />
+                    <div v-if="form.errors.tour_code" class="text-danger mt-1">
+                        {{ form.errors.tour_code }}
+                    </div>
+                </div>
                 <!-- Danh Mục Tour -->
                 <div class="mb-3">
                     <label for="category_id" class="form-label"

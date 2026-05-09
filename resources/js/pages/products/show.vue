@@ -20,7 +20,9 @@ defineProps({
                         <div class="card-body p-4">
                             <!-- NAME -->
                             <h2 class="fw-bold mb-3">{{ tour.name }}</h2>
-
+                            <h2 class="fst-italic fw-light mb-3">
+                                {{ tour.tour_code }}
+                            </h2>
                             <!-- STATUS -->
                             <span
                                 class="badge mb-3"
@@ -66,8 +68,8 @@ defineProps({
 
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">
-                                🆔 ID:
-                                <strong>{{ tour.id }}</strong>
+                                🆔 Mã Tour:
+                                <strong>{{ tour.tour_code }}</strong>
                             </li>
 
                             <li class="list-group-item">

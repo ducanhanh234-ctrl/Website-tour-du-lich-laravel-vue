@@ -7,6 +7,7 @@ defineProps({
     categories: Array,
 });
 const form = useForm({
+    tour_code: '',
     name: '',
     category_id: '',
     description: '',
@@ -38,7 +39,18 @@ const submitForm = () => {
                         {{ form.errors.name }}
                     </div>
                 </div>
-
+                <div class="mb-3">
+                    <label for="tour_code" class="form-label">Mã Tour</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="tour_code"
+                        v-model="form.tour_code"
+                    />
+                    <div v-if="form.errors.tour_code" class="text-danger mt-1">
+                        {{ form.errors.tour_code }}
+                    </div>
+                </div>
                 <!-- Danh Mục Tour -->
                 <div class="mb-3">
                     <label for="category_id" class="form-label"
