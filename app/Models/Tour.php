@@ -12,6 +12,7 @@ class Tour extends Model
     use HasFactory, SoftDeletes;
     protected $table = 'tours';
     protected $fillable = [
+        'tour_code',
         'name',
         'category_id',
         'description',

@@ -25,6 +25,13 @@ class TourResquest extends FormRequest
     {
         $tourId = $this->route('tour') ? $this->route('tour')->id : null;
         return [
+            'tour_code' => [
+                'required',
+                'string',
+                'max:255',
+                'regex:/^[A-Z0-9-]+$/',
+                Rule::unique('tours', 'tour_code')->ignore($tourId),
+            ],
             'name' => 'required|string|max:255',
             'category_id' => 'nullable|exists:categories,id',
             'description' => 'nullable|string',
